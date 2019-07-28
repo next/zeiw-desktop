@@ -1,0 +1,19 @@
+{
+  "application": {
+    "id": 556724399164620812,
+    "manifests": [
+      {
+        "label": "zeiw/app",
+        "platforms": ["win32", "win64"],
+        "local_root": ".",
+        "launch_options": [
+          {
+            "name": "ZEIW",
+            "executable": "win-unpacked/ZEIW.exe",
+            "platforms": ["win32", "win64"]
+          }
+        ]
+      }
+    ]
+  }
+}
