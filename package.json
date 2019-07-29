@@ -1,33 +1,33 @@
 {
   "name": "ZEIW",
   "version": "1.0.0",
+  "repository": "git@github.com:ZEIW/app.git",
   "license": "MIT",
   "author": "ZEIW",
-  "description": "Open source community-based game 🏓",
   "main": "app/main.js",
   "scripts": {
+    "dist": "electron-builder",
     "postinstall": "electron-builder install-app-deps",
-    "start": "yarn install && electron ./app/main.js",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "start": "yarn install && electron app/main.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^5.0.8",
+    "electron-builder": "^21.1.5",
+    "husky": "^3.0.1",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^1.11.1"
   },
   "build": {
     "appId": "org.zeiw.zeiw",
     "nsis": {
       "createDesktopShortcut": "always"
-    }
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "electron": "latest",
-    "electron-builder": "latest",
-    "husky": "^3.0.1",
-    "prettier": "1.18.2",
-    "pretty-quick": "^1.11.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
     }
   }
 }
