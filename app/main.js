@@ -1,6 +1,12 @@
 const { app, BrowserWindow } = require('electron')
 
 function createWindow() {
+  app.on('browser-window-created', (evt, createdWin) => {
+    createdWin.once('ready-to-show', () => {
+      createdWin.show()
+    })
+  })
+
   let win = new BrowserWindow({
     show: false,
     width: 1200,
@@ -9,10 +15,6 @@ function createWindow() {
       nodeIntegration: false,
       preload: __dirname + '/preload.js'
     }
-  })
-
-  win.once('ready-to-show', () => {
-    win.show()
   })
 
   win.setMenuBarVisibility(false)

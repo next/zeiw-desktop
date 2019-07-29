@@ -60,54 +60,53 @@
   window._zeiwNative = {
     getDiscordOauthCode: clientId =>
       new Promise((codeResolve, codeReject) => {
-        const connect = pipeId =>
-          new Promise(async (connectResolve, connectReject) => {
-            if (pipeId > 10) {
-              connectReject(new Error('cannot connect to discord ipc'))
-              return
-            }
-            const reconnectTimeout = setTimeout(async () => {
-              connectResolve(await connect(pipeId + 1))
-            }, 1000)
-            const client = net.createConnection(
-              '\\\\?\\pipe\\discord-ipc-' + pipeId
-            )
-            client.on('error', async () => {
-              clearTimeout(reconnectTimeout)
-              connectResolve(await connect(pipeId + 1))
-            })
-            client.on('readable', () => {
-              decode(client, async ({ op, data }) => {
-                clearTimeout(reconnectTimeout)
-                if (op === ops.FRAME && data.cmd === 'DISPATCH') {
-                  client.write(
-                    encode(ops.FRAME, {
-                      cmd: 'AUTHORIZE',
-                      args: {
-                        client_id: clientId,
-                        scopes: ['identify']
-                      },
-                      nonce: await makeNonce()
-                    })
-                  )
-                }
-                if (op === ops.FRAME && data.cmd === 'AUTHORIZE') {
-                  if (data.evt === 'ERROR') {
-                    codeReject(data.data)
-                  } else {
-                    codeResolve(data.data.code)
-                  }
-                  client.destroy()
-                }
-              })
-            })
-            client.write(
-              encode(ops.HANDSHAKE, {
-                v: 1,
-                client_id: clientId
-              })
-            )
+        const connect = pipeId => {
+          if (pipeId > 10) {
+            codeReject(new Error('cannot connect to discord ipc'))
+            return
+          }
+          const reconnectTimeout = setTimeout(() => {
+            connect(pipeId + 1)
+          }, 1000)
+          const client = net.createConnection(
+            '\\\\?\\pipe\\discord-ipc-' + pipeId
+          )
+          client.on('error', () => {
+            clearTimeout(reconnectTimeout)
+            connect(pipeId + 1)
           })
+          client.on('readable', () => {
+            decode(client, async ({ op, data }) => {
+              clearTimeout(reconnectTimeout)
+              if (op === ops.FRAME && data.cmd === 'DISPATCH') {
+                client.write(
+                  encode(ops.FRAME, {
+                    cmd: 'AUTHORIZE',
+                    args: {
+                      client_id: clientId,
+                      scopes: ['identify']
+                    },
+                    nonce: await makeNonce()
+                  })
+                )
+              }
+              if (op === ops.FRAME && data.cmd === 'AUTHORIZE') {
+                if (data.evt === 'ERROR') {
+                  codeReject(data.data)
+                } else {
+                  codeResolve(data.data.code)
+                }
+                client.destroy()
+              }
+            })
+          })
+          client.write(
+            encode(ops.HANDSHAKE, {
+              v: 1,
+              client_id: clientId
+            })
+          )
+        }
 
         connect(0)
       })
