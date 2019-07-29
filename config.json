@@ -9,7 +9,7 @@
         "launch_options": [
           {
             "name": "ZEIW",
-            "executable": "win-unpacked/app.exe",
+            "executable": "win-unpacked/ZEIW.exe",
             "platforms": ["win32", "win64"]
           }
         ]
