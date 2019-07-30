@@ -14,7 +14,7 @@
   </a>
 </p>
 
-> Open source community-based game 🏓
+> Source code for our desktop app 💻
 
 ### 🏠 [Homepage](https://zeiw.me)
 
@@ -29,16 +29,6 @@ yarn install
 ```sh
 yarn start
 ```
-
-## 👥 Core Team
-
-- [@InspectorGadget](https://github.com/InspectorGadget) - 𝑰𝑮#1337
-- [@Isetnt2](https://github.com/Isetnt2) - kennyD#3287
-- [@Mippy](https://github.com/Mippy) - Isabel#0002
-- [@Rage0001](https://github.com/Rage0001) - Rage#9991
-- [@ginkoid](https://github.com/ginkoid) - ginkoid#8888
-- [@pnfcre](https://github.com/pnfcre) - Casper#9999
-- [@vDelite](https://github.com/vDelite) - Delite#0001
 
 ## 🔒 Vulnerability Disclosure
 
