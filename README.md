@@ -16,8 +16,6 @@
 
 > Source code for our desktop app 💻
 
-### 🏠 [Homepage](https://zeiw.me)
-
 ## Install
 
 ```sh
