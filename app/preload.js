@@ -175,4 +175,12 @@
       }
     }
   }
+  window._zeiwNative.setDiscordPresence({
+    state: 'Staring at the Menu Screen',
+    details: 'Competitive Pong',
+    assets: {
+      large_image: 'zeiw',
+      large_text: 'ZEIW'
+    }
+  })
 })()
