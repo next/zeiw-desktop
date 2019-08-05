@@ -62,7 +62,7 @@
       new Promise((codeResolve, codeReject) => {
         const connect = pipeId => {
           if (pipeId > 10) {
-            codeReject(new Error('cannot connect to discord ipc'))
+            codeReject(new Error('Cannot connect to Discord IPC.'))
             return
           }
           const reconnectTimeout = setTimeout(() => {
