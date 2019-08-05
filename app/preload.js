@@ -3,6 +3,8 @@
   const crypto = require('crypto')
   const { promisify } = require('util')
 
+  const clientId = '556724399164620812'
+
   const ops = {
     HANDSHAKE: 0,
     FRAME: 1
@@ -57,58 +59,89 @@
 
   const makeNonce = async () => (await cryptoRandomBytes(16)).toString('hex')
 
-  window._zeiwNative = {
-    getDiscordOauthCode: clientId =>
-      new Promise((codeResolve, codeReject) => {
-        const connect = pipeId => {
-          if (pipeId > 10) {
-            codeReject(new Error('Cannot connect to Discord IPC.'))
-            return
-          }
-          const reconnectTimeout = setTimeout(() => {
-            connect(pipeId + 1)
-          }, 1000)
-          const client = net.createConnection(
-            '\\\\?\\pipe\\discord-ipc-' + pipeId
-          )
-          client.on('error', () => {
-            clearTimeout(reconnectTimeout)
-            connect(pipeId + 1)
-          })
-          client.on('readable', () => {
-            decode(client, async ({ op, data }) => {
-              clearTimeout(reconnectTimeout)
-              if (op === ops.FRAME && data.cmd === 'DISPATCH') {
-                client.write(
-                  encode(ops.FRAME, {
-                    cmd: 'AUTHORIZE',
-                    args: {
-                      client_id: clientId,
-                      scopes: ['identify']
-                    },
-                    nonce: await makeNonce()
-                  })
-                )
-              }
-              if (op === ops.FRAME && data.cmd === 'AUTHORIZE') {
-                if (data.evt === 'ERROR') {
-                  codeReject(data.data)
-                } else {
-                  codeResolve(data.data.code)
-                }
-                client.destroy()
-              }
-            })
-          })
-          client.write(
-            encode(ops.HANDSHAKE, {
-              v: 1,
-              client_id: clientId
-            })
-          )
-        }
-
-        connect(0)
+  const sendRequest = new Promise((connectResolve, connectReject) => {
+    const discordRequests = new Map()
+    const connect = pipeId => {
+      if (pipeId > 10) {
+        connectReject({
+          err: new Error('Cannot connect to Discord RPC.'),
+          kind: 'net'
+        })
+        return
+      }
+      const reconnectTimeout = setTimeout(() => {
+        connect(pipeId + 1)
+      }, 1000)
+      const client = net.createConnection('\\\\?\\pipe\\discord-ipc-' + pipeId)
+      client.on('error', () => {
+        clearTimeout(reconnectTimeout)
+        connect(pipeId + 1)
       })
+      client.on('readable', () => {
+        decode(client, async ({ op, data }) => {
+          clearTimeout(reconnectTimeout)
+          if (op === ops.FRAME && data.cmd === 'DISPATCH') {
+            connectResolve(
+              (cmd, args) =>
+                new Promise(async (resolve, reject) => {
+                  const nonce = await makeNonce()
+                  discordRequests.set(nonce, {
+                    resolve,
+                    reject
+                  })
+                  client.write(
+                    encode(ops.FRAME, {
+                      cmd,
+                      args,
+                      nonce
+                    })
+                  )
+                })
+            )
+          } else if (op === ops.FRAME) {
+            const prom = discordRequests.get(data.nonce)
+            if (prom !== undefined) {
+              prom.resolve(data)
+            }
+          }
+        })
+      })
+      client.write(
+        encode(ops.HANDSHAKE, {
+          v: 1,
+          client_id: clientId
+        })
+      )
+    }
+
+    connect(0)
+  })
+
+  window._zeiwNative = {
+    getDiscordOauthCode: async () => {
+      const data = await (await sendRequest)('AUTHORIZE', {
+        client_id: clientId,
+        scopes: ['identify']
+      })
+      if (data.evt === 'ERROR') {
+        throw {
+          err: new Error(data.data.message),
+          kind: 'user'
+        }
+      }
+      return data.data.code
+    },
+    setDiscordPresence: async activity => {
+      const data = await (await sendRequest)('SET_ACTIVITY', {
+        pid: process.pid,
+        activity
+      })
+      if (data.evt === 'ERROR') {
+        throw {
+          err: new Error(data.data.message),
+          kind: 'net'
+        }
+      }
+    }
   }
 })()
