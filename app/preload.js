@@ -59,66 +59,94 @@
 
   const makeNonce = async () => (await cryptoRandomBytes(16)).toString('hex')
 
-  const sendRequest = new Promise((connectResolve, connectReject) => {
-    const discordRequests = new Map()
-    const connect = pipeId => {
-      if (pipeId > 10) {
-        connectReject({
-          err: new Error('Cannot connect to Discord RPC.'),
-          kind: 'net'
-        })
-        return
-      }
-      const reconnectTimeout = setTimeout(() => {
-        connect(pipeId + 1)
-      }, 1000)
-      const client = net.createConnection('\\\\?\\pipe\\discord-ipc-' + pipeId)
-      client.on('error', () => {
-        clearTimeout(reconnectTimeout)
-        connect(pipeId + 1)
-      })
-      client.on('readable', () => {
-        decode(client, async ({ op, data }) => {
-          clearTimeout(reconnectTimeout)
-          if (op === ops.FRAME && data.cmd === 'DISPATCH') {
-            connectResolve(
-              (cmd, args) =>
-                new Promise(async (resolve, reject) => {
-                  const nonce = await makeNonce()
-                  discordRequests.set(nonce, {
-                    resolve,
-                    reject
-                  })
-                  client.write(
-                    encode(ops.FRAME, {
-                      cmd,
-                      args,
-                      nonce
-                    })
-                  )
-                })
-            )
-          } else if (op === ops.FRAME) {
-            const prom = discordRequests.get(data.nonce)
-            if (prom !== undefined) {
-              prom.resolve(data)
-            }
-          }
-        })
-      })
-      client.write(
-        encode(ops.HANDSHAKE, {
-          v: 1,
-          client_id: clientId
-        })
-      )
-    }
+  let sendRequest = null
 
-    connect(0)
-  })
+  const attemptConnect = () => {
+    sendRequest = new Promise((connectResolve, connectReject) => {
+      const discordRequests = new Map()
+      const connect = pipeId => {
+        if (pipeId > 10) {
+          connectReject({
+            err: new Error('Cannot connect to Discord RPC.'),
+            kind: 'net'
+          })
+          return
+        }
+        let finishedHandshake = false
+        const reconnectTimeout = setTimeout(() => {
+          connect(pipeId + 1)
+        }, 2000)
+        const client = net.createConnection(
+          '\\\\?\\pipe\\discord-ipc-' + pipeId
+        )
+        client.on('error', () => {
+          if (finishedHandshake) {
+            sendRequest = null
+            discordRequests.forEach(prom => {
+              prom.reject({
+                err: new Error('Disconnected from Discord RPC.'),
+                kind: 'net'
+              })
+            })
+            return
+          }
+          clearTimeout(reconnectTimeout)
+          connect(pipeId + 1)
+        })
+        client.on('readable', () => {
+          decode(client, async ({ op, data }) => {
+            finishedHandshake = true
+            clearTimeout(reconnectTimeout)
+            if (op === ops.FRAME && data.cmd === 'DISPATCH') {
+              connectResolve(
+                (cmd, args) =>
+                  new Promise(async (resolve, reject) => {
+                    const nonce = await makeNonce()
+                    discordRequests.set(nonce, {
+                      resolve,
+                      reject
+                    })
+                    client.write(
+                      encode(ops.FRAME, {
+                        cmd,
+                        args,
+                        nonce
+                      })
+                    )
+                  })
+              )
+            } else if (op === ops.FRAME) {
+              const prom = discordRequests.get(data.nonce)
+              if (prom !== undefined) {
+                discordRequests.delete(data.nonce)
+                prom.resolve(data)
+              }
+            }
+          })
+        })
+        client.write(
+          encode(ops.HANDSHAKE, {
+            v: 1,
+            client_id: clientId
+          })
+        )
+      }
+
+      connect(0)
+    })
+
+    sendRequest.catch(() => {
+      sendRequest = null
+    })
+  }
+
+  attemptConnect()
 
   window._zeiwNative = {
     getDiscordOauthCode: async () => {
+      if (sendRequest === null) {
+        attemptConnect()
+      }
       const data = await (await sendRequest)('AUTHORIZE', {
         client_id: clientId,
         scopes: ['identify']
@@ -132,6 +160,9 @@
       return data.data.code
     },
     setDiscordPresence: async activity => {
+      if (sendRequest === null) {
+        attemptConnect()
+      }
       const data = await (await sendRequest)('SET_ACTIVITY', {
         pid: process.pid,
         activity
