@@ -6,7 +6,7 @@
   "author": "ZEIW",
   "main": "app/main.js",
   "scripts": {
-    "dist": "electron-builder",
+    "dist": "electron-builder --win",
     "postinstall": "electron-builder install-app-deps",
     "pack": "electron-builder --dir",
     "start": "yarn install && electron app/main.js"
