@@ -1,6 +1,7 @@
 {
   "name": "ZEIW",
   "version": "1.0.0",
+  "description": "ZEIW Desktop App",
   "repository": "git@github.com:ZEIW/desktop.git",
   "license": "MIT",
   "author": "ZEIW",
