@@ -33,7 +33,7 @@
       return
     }
     let raw
-    if (working.full === '') {
+    if ('' === working.full) {
       working.op = packet.readInt32LE(0)
       const len = packet.readInt32LE(4)
       raw = packet.slice(8, len + 8)
@@ -65,7 +65,7 @@
     sendRequest = new Promise((connectResolve, connectReject) => {
       const discordRequests = new Map()
       const connect = pipeId => {
-        if (pipeId > 10) {
+        if (10 < pipeId) {
           connectReject({
             err: new Error('Cannot connect to Discord RPC.'),
             kind: 'net'
@@ -97,7 +97,7 @@
           decode(client, async ({ op, data }) => {
             finishedHandshake = true
             clearTimeout(reconnectTimeout)
-            if (op === ops.FRAME && data.cmd === 'DISPATCH') {
+            if (op === ops.FRAME && 'DISPATCH' === data.cmd) {
               connectResolve(
                 (cmd, args) =>
                   new Promise(async (resolve, reject) => {
@@ -144,14 +144,14 @@
 
   window._zeiwNative = {
     getDiscordOauthCode: async () => {
-      if (sendRequest === null) {
+      if (null === sendRequest) {
         attemptConnect()
       }
       const data = await (await sendRequest)('AUTHORIZE', {
         client_id: clientId,
         scopes: ['identify']
       })
-      if (data.evt === 'ERROR') {
+      if ('ERROR' === data.evt) {
         throw {
           err: new Error(data.data.message),
           kind: 'user'
@@ -160,14 +160,14 @@
       return data.data.code
     },
     setDiscordPresence: async activity => {
-      if (sendRequest === null) {
+      if (null === sendRequest) {
         attemptConnect()
       }
       const data = await (await sendRequest)('SET_ACTIVITY', {
         pid: process.pid,
         activity
       })
-      if (data.evt === 'ERROR') {
+      if ('ERROR' === data.evt) {
         throw {
           err: new Error(data.data.message),
           kind: 'net'
