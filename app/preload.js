@@ -1,10 +1,4 @@
 ;(() => {
-  window.addEventListener('DOMContentLoaded', () => {
-    for (const type of ['chrome', 'node', 'electron']) {
-      console.log(`${type}-version`, process.versions[type])
-    }
-  })
-
   const net = require('net')
   const crypto = require('crypto')
   const { promisify } = require('util')
