@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, shell } = require('electron')
 
 function createWindow() {
   app.on('browser-window-created', (evt, createdWin) => {
@@ -11,6 +11,9 @@ function createWindow() {
     show: false,
     width: 1200,
     height: 900,
+    minWidth: 600,
+    minHeight: 450,
+    frame: false,
     webPreferences: {
       nodeIntegration: true,
       preload: __dirname + '/preload.js'
@@ -27,7 +30,7 @@ function createWindow() {
 
   win.webContents.on('new-window', function(e, url) {
     e.preventDefault()
-    require('electron').shell.openExternal(url)
+    shell.openExternal(url)
   })
 }
 

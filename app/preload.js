@@ -2,6 +2,7 @@
   const net = require('net')
   const crypto = require('crypto')
   const { promisify } = require('util')
+  const { remote } = require('electron')
 
   const clientId = '556724399164620812'
 
@@ -142,6 +143,8 @@
 
   attemptConnect()
 
+  const currentWindow = remote.getCurrentWindow()
+
   window._zeiwNative = {
     getDiscordOauthCode: async () => {
       if (null === sendRequest) {
@@ -173,6 +176,14 @@
           kind: 'net'
         }
       }
+    },
+    frame: {
+      minimize: () => currentWindow.minimize(),
+      maximize: () =>
+        currentWindow.isMaximized()
+          ? currentWindow.unmaximize()
+          : currentWindow.maximize(),
+      close: () => currentWindow.close()
     }
   }
   window._zeiwNative.setDiscordPresence({
