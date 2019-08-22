@@ -1,7 +1,7 @@
 {
   "name": "ZEIW",
   "version": "1.0.0",
-  "description": "ZEIW Desktop App",
+  "description": "Open source community-based game 🏓",
   "repository": "git@github.com:ZEIW/desktop.git",
   "license": "MIT",
   "author": "ZEIW",
@@ -9,7 +9,6 @@
   "scripts": {
     "dist": "electron-builder --win",
     "postinstall": "electron-builder install-app-deps",
-    "lint": "eslint --fix app/*",
     "pack": "electron-builder --dir",
     "start": "yarn install && electron app/main.js"
   },
@@ -18,20 +17,19 @@
       "pre-commit": "pretty-quick --staged"
     }
   },
-  "dependencies": {},
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "tabWidth": 2
+  },
   "devDependencies": {
     "electron": "^6.0.3",
     "electron-builder": "^21.2.0",
-    "eslint": "^6.2.1",
-    "eslint-config-prettier": "^6.1.0",
     "husky": "^3.0.4",
-    "prettier": "^1.18.2",
+    "prettier": "1.18.2",
     "pretty-quick": "^1.11.1"
   },
   "build": {
-    "appId": "org.zeiw.zeiw",
-    "nsis": {
-      "createDesktopShortcut": "always"
-    }
+    "appId": "org.zeiw.zeiw"
   }
 }
