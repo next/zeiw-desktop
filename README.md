@@ -2,7 +2,7 @@
 
 [![](https://discordapp.com/api/guilds/541950836994211870/embed.png?style=banner2)](https://discord.gg/h7NxqBe)
 
-Source code for our desktop app 💻
+Source code for the ZEIW desktop app 💻
 
 [![](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io)
 
