@@ -24,8 +24,8 @@ We welcome security research on ZEIW under the terms of our [vulnerability discl
 
 ## Contributing
 
-Contributions, issues and feature requests are welcome! Feel free to check out the [issues page](https://github.com/ZEIW/ZEIW/issues).
+Contributions, issues, and feature requests are welcome! Feel free to check out the [issues-only repository](https://github.com/next/zeiw-issues/issues).
 
 ## License
 
-This project is [MIT](./LICENSE) licensed.
+[MIT License](./LICENSE).
