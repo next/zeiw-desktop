@@ -5,7 +5,7 @@
   "repository": "git@github.com:next/zeiw-desktop.git",
   "license": "MIT",
   "author": "Casper <pnfcre@gmail.com>",
-  "main": "index.js",
+  "main": "app/main.js",
   "scripts": {
     "dist": "electron-builder --win",
     "postinstall": "electron-builder install-app-deps",
