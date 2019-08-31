@@ -1,10 +1,10 @@
 {
-  "name": "ZEIW",
+  "name": "zeiw-desktop",
   "version": "1.0.0",
   "description": "Open source community-based game 🏓",
-  "repository": "git@github.com:ZEIW/desktop.git",
+  "repository": "git@github.com:next/zeiw-desktop.git",
   "license": "MIT",
-  "author": "ZEIW",
+  "author": "Casper <pnfcre@gmail.com>",
   "main": "app/main.js",
   "scripts": {
     "dist": "electron-builder --win",
@@ -23,7 +23,7 @@
     "tabWidth": 2
   },
   "devDependencies": {
-    "electron": "^6.0.3",
+    "electron": "^6.0.5",
     "electron-builder": "^21.2.0",
     "husky": "^3.0.4",
     "prettier": "1.18.2",
