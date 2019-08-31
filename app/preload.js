@@ -143,6 +143,30 @@
 
   attemptConnect()
 
+  let currentActivity = null
+
+  const setSinglePresence = async activity => {
+    if (null === sendRequest) {
+      attemptConnect()
+    }
+    const data = await (await sendRequest)('SET_ACTIVITY', {
+      pid: process.pid,
+      activity
+    })
+    if ('ERROR' === data.evt) {
+      throw {
+        err: new Error(data.data.message),
+        kind: 'net'
+      }
+    }
+  }
+
+  setInterval(() => {
+    if (currentActivity !== null) {
+      setSinglePresence(currentActivity)
+    }
+  }, 10000)
+
   const currentWindow = remote.getCurrentWindow()
 
   window._zeiwNative = {
@@ -162,20 +186,9 @@
       }
       return data.data.code
     },
-    setDiscordPresence: async activity => {
-      if (null === sendRequest) {
-        attemptConnect()
-      }
-      const data = await (await sendRequest)('SET_ACTIVITY', {
-        pid: process.pid,
-        activity
-      })
-      if ('ERROR' === data.evt) {
-        throw {
-          err: new Error(data.data.message),
-          kind: 'net'
-        }
-      }
+    setDiscordPresence: activity => {
+      currentActivity = activity
+      setSinglePresence(activity)
     },
     frame: {
       minimize: () => currentWindow.minimize(),
