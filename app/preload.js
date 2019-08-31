@@ -3,6 +3,7 @@
   const crypto = require('crypto')
   const { promisify } = require('util')
   const { remote } = require('electron')
+  const buildEnv = require('./build-env')
 
   const clientId = '556724399164620812'
 
@@ -197,7 +198,8 @@
           ? currentWindow.unmaximize()
           : currentWindow.maximize(),
       close: () => currentWindow.close()
-    }
+    },
+    buildEnv
   }
   window._zeiwNative.setDiscordPresence({
     state: 'Staring at the Menu Screen',

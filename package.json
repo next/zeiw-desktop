@@ -7,10 +7,9 @@
   "author": "Casper <pnfcre@gmail.com>",
   "main": "app/main.js",
   "scripts": {
-    "dist": "electron-builder --win -p never",
+    "dist": "sh ./scripts/make-build-env.sh && electron-builder --win --dir -p never",
     "postinstall": "electron-builder install-app-deps",
-    "pack": "electron-builder --dir",
-    "start": "yarn install && electron app/main.js"
+    "start": "yarn install && sh ./scripts/make-build-env.sh && electron app/main.js"
   },
   "husky": {
     "hooks": {
