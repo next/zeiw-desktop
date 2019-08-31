@@ -1,6 +1,6 @@
 #!/bin/sh
-mkdir -p $HOME/.dispatch
-cat << EOF > $HOME/.dispatch/credentials.json
+mkdir -p ~/.dispatch
+cat << EOF > ~/.dispatch/credentials.json
 {
   "BotCredentials": {
     "application_id": "$DISCORD_APPLICATION_ID",
