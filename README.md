@@ -4,6 +4,7 @@
 
 Source code for the ZEIW desktop app 💻
 
+[![](https://travis-ci.com/next/zeiw-desktop.svg?branch=master)](https://travis-ci.com/next/zeiw-desktop)
 [![](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io)
 
 ## Install
