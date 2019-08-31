@@ -7,7 +7,7 @@
   "author": "Casper <pnfcre@gmail.com>",
   "main": "app/main.js",
   "scripts": {
-    "dist": "electron-builder --win",
+    "dist": "electron-builder --win -p never",
     "postinstall": "electron-builder install-app-deps",
     "pack": "electron-builder --dir",
     "start": "yarn install && electron app/main.js"

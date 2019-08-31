@@ -5,6 +5,7 @@ node_js:
 cache: yarn
 script: yarn dist
 deploy:
+  skip_cleanup: true
   provider: script
   script: bash scripts/deploy.sh
   on:
