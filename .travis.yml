@@ -1,3 +1,8 @@
+language: node_js
+node_js:
+  - 12
+cache: yarn
+script: yarn dist
 deploy:
   provider: script
   script: bash scripts/deploy.sh
