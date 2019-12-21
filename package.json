@@ -3,6 +3,7 @@
   "description": "Open source community-based game.",
   "license": "MIT",
   "author": "Next",
+  "version": "1.0.0",
   "main": "app/main.js",
   "scripts": {
     "dist": "sh ./scripts/make-build-env.sh && electron-builder --win --dir -p never",
