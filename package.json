@@ -1,25 +1,13 @@
 {
   "name": "zeiw-desktop",
-  "version": "1.0.0",
-  "description": "Open source community-based game 🏓",
-  "repository": "git@github.com:next/zeiw-desktop.git",
+  "description": "Open source community-based game.",
   "license": "MIT",
-  "author": "Casper <pnfcre@gmail.com>",
+  "author": "Next",
   "main": "app/main.js",
   "scripts": {
     "dist": "sh ./scripts/make-build-env.sh && electron-builder --win --dir -p never",
     "postinstall": "electron-builder install-app-deps",
     "start": "yarn install && sh ./scripts/make-build-env.sh && electron app/main.js"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true,
-    "tabWidth": 2
   },
   "devDependencies": {
     "electron": "^7.1.7",
@@ -30,5 +18,15 @@
   },
   "build": {
     "appId": "org.zeiw.zeiw"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "prettier": {
+    "semi": false,
+    "printWidth": 100,
+    "singleQuote": true
   }
 }

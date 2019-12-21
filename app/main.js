@@ -16,7 +16,7 @@ function createWindow() {
     frame: false,
     webPreferences: {
       nodeIntegration: true,
-      preload: __dirname + '/preload.js'
+      preload: `${__dirname}/preload.js`
     }
   })
 
@@ -28,7 +28,7 @@ function createWindow() {
 
   win.loadURL('https://play.zeiw.me')
 
-  win.webContents.on('new-window', function(e, url) {
+  win.webContents.on('new-window', (e, url) => {
     e.preventDefault()
     shell.openExternal(url)
   })

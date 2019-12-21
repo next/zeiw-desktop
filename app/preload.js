@@ -78,9 +78,7 @@
         const reconnectTimeout = setTimeout(() => {
           connect(pipeId + 1)
         }, 2000)
-        const client = net.createConnection(
-          '\\\\?\\pipe\\discord-ipc-' + pipeId
-        )
+        const client = net.createConnection(`\\\\?\\pipe\\discord-ipc-${pipeId}`)
         client.on('error', () => {
           if (finishedHandshake) {
             sendRequest = null
@@ -194,9 +192,7 @@
     frame: {
       minimize: () => currentWindow.minimize(),
       maximize: () =>
-        currentWindow.isMaximized()
-          ? currentWindow.unmaximize()
-          : currentWindow.maximize(),
+        currentWindow.isMaximized() ? currentWindow.unmaximize() : currentWindow.maximize(),
       close: () => currentWindow.close()
     },
     buildEnv
