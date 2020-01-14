@@ -11,7 +11,7 @@
     "start": "yarn install && sh ./scripts/make-build-env.sh && electron app/main.js"
   },
   "devDependencies": {
-    "electron": "^7.1.8",
+    "electron": "^7.1.9",
     "electron-builder": "^22.2.0",
     "husky": "^4.0.7",
     "prettier": "1.19.1",
