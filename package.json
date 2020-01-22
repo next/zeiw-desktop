@@ -13,7 +13,7 @@
   "devDependencies": {
     "electron": "^7.1.9",
     "electron-builder": "^22.2.0",
-    "husky": "^4.0.10",
+    "husky": "^4.2.0",
     "prettier": "1.19.1",
     "pretty-quick": "^2.0.1"
   },
