@@ -1,4 +1,6 @@
+dist
 *.log
-/dist
-/node_modules
-/app/build-env.js
+yarn.lock
+node_modules
+app/build-env.js
+package-lock.json

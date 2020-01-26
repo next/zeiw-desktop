@@ -26,7 +26,7 @@ function createWindow() {
     win = null
   })
 
-  win.loadURL('https://play.zeiw.me')
+  win.loadURL('https://play.pnfc.re')
 
   win.webContents.on('new-window', (e, url) => {
     e.preventDefault()
