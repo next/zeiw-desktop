@@ -9,7 +9,7 @@
 
   const ops = {
     HANDSHAKE: 0,
-    FRAME: 1
+    FRAME: 1,
   }
 
   const encode = (op, data) => {
@@ -27,7 +27,7 @@
     cb,
     working = {
       full: '',
-      op: undefined
+      op: undefined,
     }
   ) => {
     const packet = sock.read()
@@ -66,11 +66,11 @@
   const attemptConnect = () => {
     sendRequest = new Promise((connectResolve, connectReject) => {
       const discordRequests = new Map()
-      const connect = pipeId => {
+      const connect = (pipeId) => {
         if (10 < pipeId) {
           connectReject({
             err: new Error('Cannot connect to Discord RPC.'),
-            kind: 'net'
+            kind: 'net',
           })
           return
         }
@@ -82,10 +82,10 @@
         client.on('error', () => {
           if (finishedHandshake) {
             sendRequest = null
-            discordRequests.forEach(prom => {
+            discordRequests.forEach((prom) => {
               prom.reject({
                 err: new Error('Disconnected from Discord RPC.'),
-                kind: 'net'
+                kind: 'net',
               })
             })
             return
@@ -104,13 +104,13 @@
                     const nonce = await makeNonce()
                     discordRequests.set(nonce, {
                       resolve,
-                      reject
+                      reject,
                     })
                     client.write(
                       encode(ops.FRAME, {
                         cmd,
                         args,
-                        nonce
+                        nonce,
                       })
                     )
                   })
@@ -127,7 +127,7 @@
         client.write(
           encode(ops.HANDSHAKE, {
             v: 1,
-            client_id: clientId
+            client_id: clientId,
           })
         )
       }
@@ -144,18 +144,18 @@
 
   let currentActivity = null
 
-  const setSinglePresence = async activity => {
+  const setSinglePresence = async (activity) => {
     if (null === sendRequest) {
       attemptConnect()
     }
     const data = await (await sendRequest)('SET_ACTIVITY', {
       pid: process.pid,
-      activity
+      activity,
     })
     if ('ERROR' === data.evt) {
       throw {
         err: new Error(data.data.message),
-        kind: 'net'
+        kind: 'net',
       }
     }
   }
@@ -175,17 +175,17 @@
       }
       const data = await (await sendRequest)('AUTHORIZE', {
         client_id: clientId,
-        scopes: ['identify']
+        scopes: ['identify'],
       })
       if ('ERROR' === data.evt) {
         throw {
           err: new Error(data.data.message),
-          kind: 'user'
+          kind: 'user',
         }
       }
       return data.data.code
     },
-    setDiscordPresence: activity => {
+    setDiscordPresence: (activity) => {
       currentActivity = activity
       setSinglePresence(activity)
     },
@@ -193,16 +193,16 @@
       minimize: () => currentWindow.minimize(),
       maximize: () =>
         currentWindow.isMaximized() ? currentWindow.unmaximize() : currentWindow.maximize(),
-      close: () => currentWindow.close()
+      close: () => currentWindow.close(),
     },
-    buildEnv
+    buildEnv,
   }
   window._zeiwNative.setDiscordPresence({
     state: 'Staring at the Menu Screen',
     details: 'Competitive Pong',
     assets: {
       large_image: 'zeiw',
-      large_text: 'ZEIW'
-    }
+      large_text: 'ZEIW',
+    },
   })
 })()

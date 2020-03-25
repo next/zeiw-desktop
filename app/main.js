@@ -16,8 +16,8 @@ function createWindow() {
     frame: false,
     webPreferences: {
       nodeIntegration: true,
-      preload: `${__dirname}/preload.js`
-    }
+      preload: `${__dirname}/preload.js`,
+    },
   })
 
   win.setMenuBarVisibility(false)
