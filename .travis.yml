@@ -1,7 +1,7 @@
 os: windows
 language: node_js
 node_js:
-  - 16.3.0
+  - 16.4.1
 env:
   - YARN_GPG=no
 cache: yarn
